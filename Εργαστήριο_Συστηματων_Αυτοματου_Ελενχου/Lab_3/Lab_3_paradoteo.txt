@@ -1,0 +1,95 @@
+clear all
+clc
+
+m=2; L=3; b=1; g=9.81;
+x1e=40*pi/180; x2e=0;
+we = sqrt(g/(L * cos(x1e)));
+
+G = tf( 2*g*sin(x1e)/(L*we), [1 b/(m*L) g*(sin(x1e)^2)/(L*cos(x1e))] );
+
+t = 0:0.1:200;
+u = 0.5*sin(2*pi*0.02*t) + 0.5;
+
+%% Excersise 5
+C = pid(1, 1, 0.01);
+subplot(311)
+hold on
+plot(t, (180/pi)*u)
+y = (180/pi)*lsim(feedback(series(C, G), 1, -1), u, t, 0);
+plot(t, y)
+ylabel("φ (degrees)")
+xlabel("Time (seconds)")
+title("PID w/ Kp = 1")
+
+C = pid(5, 1, 0.01);
+subplot(312)
+hold on
+plot(t, (180/pi)*u)
+y = (180/pi)*lsim(feedback(series(C, G), 1, -1), u, t, 0);
+plot(t, y)
+ylabel("φ (degrees)")
+xlabel("Time (seconds)")
+title("PID w/ Ki = 5")
+
+C = pid(50, 1, 0.01);
+subplot(313)
+hold on
+plot(t, (180/pi)*u)
+y = (180/pi)*lsim(feedback(series(C, G), 1, -1), u, t, 0);
+plot(t, y)
+ylabel("φ (degrees)")
+xlabel("Time (seconds)")
+title("PID w/ Ki = 50")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+clear all
+clc
+
+m=2; L=1; b=1; g=9.81;
+x2e=0;
+
+C = [1 0; 0 1];
+D = [0; 0];
+t = 0:0.01:25;
+
+%% Excersise 9.i
+x1e=15*pi/180; we = sqrt(g/(L * cos(x1e)));
+A = [0 1; -g*(sin(x1e)^2)/(L*cos(x1e)) -b/(m*L)];
+B = [0; 2*g*sin(x1e)/(L*we)];
+
+Gi = ss(A ,B ,C ,D );
+impulse(Gi, t)
+
+%% Excersise 9.ii
+x1e=40*pi/180; we = sqrt(g/(L * cos(x1e)));
+A = [0 1; -g*(sin(x1e)^2)/(L*cos(x1e)) -b/(m*L)];
+B = [0; 2*g*sin(x1e)/(L*we)];
+
+Gii = ss(A ,B ,C ,D );
+hold on
+impulse(Gii, t)
+
+%% Excersise 9.iii
+x1e=87*pi/180; we = sqrt(g/(L * cos(x1e)));
+A = [0 1; -g*(sin(x1e)^2)/(L*cos(x1e)) -b/(m*L)];
+B = [0; 2*g*sin(x1e)/(L*we)];
+
+Giii = ss(A ,B ,C ,D );
+impulse(Giii, t)
+legend()
